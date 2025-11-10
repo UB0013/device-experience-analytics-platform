@@ -1,0 +1,98 @@
+kafka:
+  brokers:
+    - "kafka-1:29092"
+    - "kafka-2:29093"
+  brokers_external:
+    - "localhost:9092"
+    - "localhost:9093"
+  topics:
+    app_events:
+      partitions: 6
+      replication_factor: 2
+    crashes:
+      partitions: 6
+      replication_factor: 2
+    performance:
+      partitions: 6
+      replication_factor: 2
+    processed_metrics:
+      partitions: 3
+      replication_factor: 2
+  consumer:
+    group_id: "telemetry-consumer-group"
+    auto_offset_reset: "earliest"
+  producer:
+    acks: "all"
+    retries: 3
+    batch_size: 16384
+    linger_ms: 10
+
+spark:
+  master: "spark://spark-master:7077"
+  app_name: "TelemetryPlatform"
+  streaming:
+    batch_interval_seconds: 5
+    checkpoint_dir: "hdfs://namenode:9000/spark/checkpoints"
+    watermark_delay: "10 seconds"
+  batch:
+    executor_memory: "2g"
+    executor_cores: 2
+    num_executors: 2
+
+hdfs:
+  namenode: "hdfs://namenode:9000"
+  paths:
+    raw: "/data/raw"
+    processed: "/data/processed"
+    historical: "/data/historical"
+    checkpoints: "/spark/checkpoints"
+
+hive:
+  metastore_uri: "thrift://hive-metastore:9083"
+  database: "telemetry_db"
+
+monitoring:
+  prometheus:
+    port: 8001
+    metrics_path: "/metrics"
+  alerting:
+    throughput_threshold_low: 100
+    latency_threshold_ms: 5000
+    error_rate_threshold: 0.05
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  cors_origins:
+    - "http://localhost:3000"
+    - "http://localhost:8088"
+
+generator:
+  default_rate: 1000
+  event_types:
+    - app_open
+    - feature_used
+    - crash_event
+    - performance_metric
+  regions:
+    - us-east
+    - us-west
+    - eu-west
+    - eu-central
+    - ap-south
+    - ap-east
+  device_types:
+    - mobile
+    - desktop
+    - tablet
+  operating_systems:
+    - iOS
+    - Android
+    - Windows
+    - macOS
+    - Linux
+  app_versions:
+    - "2.3.0"
+    - "2.4.0"
+    - "2.4.1"
+    - "2.5.0-beta"

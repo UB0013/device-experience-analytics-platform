@@ -1,0 +1,25 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "telemetry-api"
+    static_configs:
+      - targets: ["telemetry-api:8001"]
+    metrics_path: "/metrics"
+
+  - job_name: "kafka"
+    static_configs:
+      - targets: ["kafka-1:9092", "kafka-2:9093"]
+
+  - job_name: "spark-master"
+    static_configs:
+      - targets: ["spark-master:8080"]
+
+  - job_name: "hdfs-namenode"
+    static_configs:
+      - targets: ["namenode:9870"]
+
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
